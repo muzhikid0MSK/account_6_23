@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/mb_item_detail"
+        android:enabled="true"
+        android:icon="@drawable/detail"
+        android:title="明细"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/mb_item_statistics"
+        android:enabled="true"
+        android:icon="@drawable/statistics"
+        android:title="统计"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/mb_item_property"
+        android:enabled="true"
+        android:icon="@drawable/property"
+        android:title="资产"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/mb_item_me"
+        android:enabled="true"
+        android:icon="@drawable/me"
+        android:title="我的"
+        app:showAsAction="ifRoom" />
+</menu>
