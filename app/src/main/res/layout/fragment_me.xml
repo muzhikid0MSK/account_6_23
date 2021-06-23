@@ -85,6 +85,12 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:hint="设置阈值"/>
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="确定"
+                android:layout_weight="3"/>
         </LinearLayout>
 
     </LinearLayout>

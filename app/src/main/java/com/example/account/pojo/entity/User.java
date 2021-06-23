@@ -27,6 +27,8 @@ public class User {
      */
     private String avatarUrl;
 
+    private Double threshold;
+
     public User() {
     }
 
@@ -68,5 +70,13 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public void setThreshold(Double threshold) {
+        this.threshold = threshold;
+    }
+
+    public Double getThreshold() {
+        return threshold;
     }
 }

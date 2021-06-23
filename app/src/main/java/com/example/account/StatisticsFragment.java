@@ -6,10 +6,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.account.mapper.AccountMapper;
 import com.example.account.mapper.InitMapper;
@@ -167,30 +169,35 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     }
 
     private void initData(int c){
-
+        testUser = userInfo.getUser();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
         Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH)+1; //第一个月从0开始，所以得到月份＋1
+        int day = calendar.get(calendar.DAY_OF_MONTH);
+
+        Log.d("StatisticsFragment",""+year+month+day);
         switch (c){
             case 0: // 周
-                while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                    calendar.add(Calendar.DAY_OF_WEEK, -1);
-                }
+//                while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+//                    calendar.add(Calendar.DAY_OF_WEEK, -1);
+//                }
                 dates = new ArrayList<>();
                 for (int i = -7; i < 0; i++) {
                     dates.add(dateFormat.format(calendar.getTime()));
                     calendar.add(Calendar.DATE, -1);
                 }
                 Collections.reverse(dates);
-                //TODO 从数据库中获取的日期这里是写死的
+                for(int i =0;i<7;i++){
+                   System.out.println( dates.toString());
+                }
                 StatisticsDTO statisticsDTO;
                 if (currState == 0) {
                     statisticsDTO =
-                            statisticsMapper.getWeeklyExpenditureStatistics(testUser.getId(),"2021","06","14");
-
+                            statisticsMapper.getWeeklyExpenditureStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month), Integer.toString(day));
                 }else{
                     statisticsDTO =
-                            statisticsMapper.getWeeklyIncomeStatistics(testUser.getId(),"2021","06","14");
-
+                            statisticsMapper.getWeeklyIncomeStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month),Integer.toString(day));
                 }
                 weeklyData = new ArrayList<>();
                 weeklyData = statisticsDTO.getDetailAmount();
@@ -200,12 +207,11 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
             case 1: //月
                 dates = new ArrayList<>();
                 getDayByMonth(2021,6);
-                //TODO 从数据库中获取的日期这里是写死的
                 StatisticsDTO statisticsDTO1;
                 if(currState == 0){
-                    statisticsDTO1 = statisticsMapper.getMonthlyExpenditureStatistics(testUser.getId(),"2021","06");
+                    statisticsDTO1 = statisticsMapper.getMonthlyExpenditureStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month));
                 }else{
-                    statisticsDTO1 = statisticsMapper.getMonthlyIncomeStatistics(testUser.getId(),"2021","06");
+                    statisticsDTO1 = statisticsMapper.getMonthlyIncomeStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month));
                 }
                 monthlyData = new ArrayList<>();
                 monthlyData = statisticsDTO1.getDetailAmount();
@@ -215,12 +221,11 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
             case 2: //年
                 dates = new ArrayList<>();
                 genMonths(2021);
-                //TODO 从数据库中获取的日期这里是写死的
                 StatisticsDTO statisticsDTO2;
                 if(currState == 0){
-                    statisticsDTO2 = statisticsMapper.getYearlyExpenditureStatistics(testUser.getId(),"2021");
+                    statisticsDTO2 = statisticsMapper.getYearlyExpenditureStatistics(testUser.getId(), Integer.toString(year));
                 }else{
-                    statisticsDTO2 = statisticsMapper.getYearlyIncomeStatistics(testUser.getId(),"2021");
+                    statisticsDTO2 = statisticsMapper.getYearlyIncomeStatistics(testUser.getId(), Integer.toString(year));
                 }
                 yearlyData = new ArrayList<>();
                 yearlyData = statisticsDTO2.getDetailAmount();
@@ -345,31 +350,14 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     }
 
     private void initDatabase(){
-        database = InitMapper.getDatabase();
         statisticsMapper = InitMapper.getStatisticsMapper();
-        userMapper = InitMapper.getUserMapper();
         recordMapper = InitMapper.getRecordMapper();
         accountMapper = InitMapper.getAccountMapper();
-        statisticsMapper = InitMapper.getStatisticsMapper();
         // insertRecords();
 
     }
 
     private void insertRecords() {
-//        User user = new User();
-//        user.setId(SnowFlakeUtil.getInstance().nextId());
-//        user.setUserName("邹皓杰");
-//        user.setPhoneNumber("18996345736");
-//        user.setPassword("123456");
-//        userMapper.insertUser(user);
-//
-//        User user2 = new User();
-//        user2.setId(SnowFlakeUtil.getInstance().nextId());
-//        user2.setUserName("刘凯卫");
-//        user2.setPhoneNumber("13608382065");
-//        user2.setPassword("123456");
-//        userMapper.insertUser(user2);
-
 //        testUser = new User();
 //        testUser.setId(SnowFlakeUtil.getInstance().nextId());
 //        testUser.setUserName("梅盛珂");
@@ -457,10 +445,15 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        //initDatabase();
-        initData(0);
-        initView();
-        initListener();
+        userInfo = (UserInfo)getActivity().getApplication();
+        initDatabase();
+        if(userInfo.getUser()!=null){
+            initData(0);
+            initView();
+            initListener();
+        }else{
+            Toast.makeText(getActivity().getApplicationContext(),"请先登录",Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initListener() {
