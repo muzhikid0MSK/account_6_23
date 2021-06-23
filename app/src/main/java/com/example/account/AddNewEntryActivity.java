@@ -112,9 +112,9 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 account=Double.parseDouble(straccount);
-                if (account==(double)0){
-                    Toast.makeText(AddNewEntryActivity.this,"请输入金额",Toast.LENGTH_SHORT).show();
-                }else{
+                if (account==(double)0||accountId==null){
+                    Toast.makeText(AddNewEntryActivity.this,"请输入金额或选择账户",Toast.LENGTH_SHORT).show();
+                } else{
 //                    userInfo = (UserInfo)getApplication();
 //                    userInfo.getUser().getId();
 //                    Account account = new Account();
@@ -366,6 +366,7 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initdata() {
+        accountId = null;
         incometypeid=null;
         expendituretypeid=1L;
         database = InitMapper.getDatabase();
@@ -413,73 +414,73 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                 pictureSelect="餐饮支出";
                 initImageView();
                 ivZDining.setAlpha((float)0.3);
-                expendituretypeid= 0L;
+                expendituretypeid= 1L;
                 break;
             case R.id.imageView:
                 pictureSelect="服饰支出";
                 initImageView();
                 ivZClothing.setAlpha((float)0.3);
-                expendituretypeid= 1L;
+                expendituretypeid= 2L;
                 break;
             case R.id.imageView3:
                 pictureSelect="日用支出";
                 initImageView();
                 ivZDailyuse.setAlpha((float)0.3);
-                expendituretypeid= 2L;
+                expendituretypeid= 3L;
                 break;
             case R.id.imageView4:
                 pictureSelect="蔬菜支出";
                 initImageView();
                 ivZVegetables.setAlpha((float)0.3);
-                expendituretypeid= 3L;
+                expendituretypeid= 4L;
                 break;
             case R.id.imageView6:
                 pictureSelect="出行支出";
                 initImageView();
                 ivZTravel.setAlpha((float)0.3);
-                expendituretypeid= 4L;
+                expendituretypeid= 5L;
                 break;
             case R.id.imageView7:
                 pictureSelect="娱乐支出";
                 initImageView();
                 ivZEntertainment.setAlpha((float)0.3);
-                expendituretypeid= 5L;
+                expendituretypeid= 6L;
                 break;
             case R.id.imageView8:
                 pictureSelect="数码支出";
                 initImageView();
                 ivZDigital.setAlpha((float)0.3);
-                expendituretypeid= 6L;
+                expendituretypeid= 7L;
                 break;
             case R.id.imageView9:
                 pictureSelect="其他支出";
                 initImageView();
                 ivZOther.setAlpha((float)0.3);
-                expendituretypeid= 7L;
+                expendituretypeid= 8L;
                 break;
             case R.id.imageView10:
                 pictureSelect="工资收入";
                 initImageView();
                 ivSSalary.setAlpha((float)0.3);
-                incometypeid = 0L;
+                incometypeid = 1L;
                 break;
             case R.id.imageView11:
                 pictureSelect="兼职收入";
                 initImageView();
                 ivSParttime.setAlpha((float)0.3);
-                incometypeid = 1L;
+                incometypeid = 2L;
                 break;
             case R.id.imageView5:
                 pictureSelect="理财收入";
                 initImageView();
                 ivSFinancial.setAlpha((float)0.3);
-                incometypeid = 2L;
+                incometypeid = 3L;
                 break;
             case R.id.imageView12:
                 pictureSelect="其他收入";
                 initImageView();
                 ivSOther.setAlpha((float)0.3);
-                incometypeid = 3L;
+                incometypeid = 4L;
                 break;
         }
     }

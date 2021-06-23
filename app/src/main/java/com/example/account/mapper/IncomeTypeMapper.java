@@ -21,14 +21,14 @@ public class IncomeTypeMapper {
     public IncomeTypeMapper() {
         IncomeType basicIncome = new IncomeType();
         basicIncome.setId(1L);
-        basicIncome.setName("账户初始收入");
+        basicIncome.setName("工资");
         basicIncome.setRank(1);
         basicIncome.setRemove(false);
         this.insertIncomeType(basicIncome);
 
         IncomeType wage = new IncomeType();
         wage.setId(2L);
-        wage.setName("工资");
+        wage.setName("兼职");
         wage.setRank(2);
         wage.setRemove(false);
         this.insertIncomeType(wage);
@@ -42,7 +42,7 @@ public class IncomeTypeMapper {
 
         IncomeType parTime = new IncomeType();
         parTime.setId(4L);
-        parTime.setName("兼职");
+        parTime.setName("其他");
         parTime.setRank(4);
         parTime.setRemove(false);
         this.insertIncomeType(parTime);
