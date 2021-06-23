@@ -55,7 +55,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 public class StatisticsFragment extends Fragment implements View.OnClickListener {
     LineChartView trendChart;
     PieChart proportionChart;
-
+    UserInfo userInfo;
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
     List<String>dates;
@@ -167,6 +167,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     }
 
     private void initData(int c){
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
         Calendar calendar = Calendar.getInstance();
         switch (c){
@@ -350,7 +351,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
         recordMapper = InitMapper.getRecordMapper();
         accountMapper = InitMapper.getAccountMapper();
         statisticsMapper = InitMapper.getStatisticsMapper();
-        insertRecords();
+        // insertRecords();
 
     }
 
@@ -456,7 +457,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        initDatabase();
+        //initDatabase();
         initData(0);
         initView();
         initListener();
@@ -519,5 +520,13 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
             case 2:drawTrend(yearlyData,flag);break;
         }
         drawProportion(flag);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            userInfo =(UserInfo)getActivity().getApplication();
+        }
     }
 }

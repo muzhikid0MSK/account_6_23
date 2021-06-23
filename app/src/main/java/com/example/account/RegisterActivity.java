@@ -16,6 +16,11 @@ import com.example.account.mapper.UserMapper;
 import com.example.account.pojo.entity.User;
 import com.example.account.util.SnowFlakeUtil;
 
+/**
+ * @author 梅盛珂
+ * @since 2021年06月23日13:22:42
+ * @description 注册
+ */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView ivBack;
     EditText etPhoneNumber;
@@ -25,7 +30,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     UserInfo userInfo;
 
-    InitMapper initMapper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         switch (view.getId()){
             case R.id.iv_back:
                 finish();
+                break;
             case R.id.btn_register:
                 User user = new User();
                 user.setId(SnowFlakeUtil.getInstance().nextId());

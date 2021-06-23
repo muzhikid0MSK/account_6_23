@@ -26,7 +26,9 @@ import com.example.account.pojo.entity.User;
 import com.example.account.util.DataBaseUtil;
 
 /**
- *
+ * @author 梅盛珂
+ * @since 2021年06月23日13:22:10
+ * @description 登录
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     TextView tvRegister;
