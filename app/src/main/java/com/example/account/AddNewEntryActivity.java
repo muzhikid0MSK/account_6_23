@@ -99,6 +99,7 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_entry);
         userInfo = (UserInfo)getApplication();
+        initifuser();
         initdata();
         initview();
         initListener();
@@ -126,8 +127,12 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
 //                    if (incometypeid==null){
 //                        account=0-account;
 //                    }
+                    Calendar cal=Calendar.getInstance();
+                    int hour  =cal.get(Calendar.HOUR_OF_DAY);  //小时
+                    int minute=cal.get(Calendar.MINUTE);   //分
+                    int second=cal.get(Calendar.SECOND);  //秒
                     insertOneRecord(SnowFlakeUtil.getInstance().nextId(),accountId,expendituretypeid,incometypeid,
-                            account,null,Year+"-"+Month+"-"+Day+" 23:39:34");
+                            account,null,Year+"-"+Month+"-"+Day+" "+hour+":"+minute+":"+second);
 
 
                     Toast.makeText(AddNewEntryActivity.this,pictureSelect+selectaccount+
@@ -153,23 +158,18 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                         selectaccount=items[which];
                         //TODO which现在只能选默认账户
                         AccountDTO accountDTO = InitMapper.getAccountMapper().getAccountByUserId(userInfo.getUser().getId()).get(which);
-                        accountId = accountDTO.getId();
+                        accountId = (long)accountDTO.getId();
+                        alertDialog.dismiss();
+                        Toast.makeText(AddNewEntryActivity.this,accountId+"----"+which,Toast.LENGTH_SHORT).show();
                     }
                 });
 
-                alertBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        alertDialog.dismiss();
-                    }
-                });
-
-                alertBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        alertDialog.dismiss();
-                    }
-                });
+//                alertBuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        alertDialog.dismiss();
+//                    }
+//                });
 
                 alertDialog = alertBuilder.create();
                 alertDialog.show();
@@ -357,9 +357,17 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
+    private void initifuser() {
+        userInfo = (UserInfo)getApplication();
+        if (userInfo.getUser()==null){
+            Toast.makeText(AddNewEntryActivity.this,"未登录！",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
     private void initdata() {
         incometypeid=null;
-        expendituretypeid=null;
+        expendituretypeid=1L;
         database = InitMapper.getDatabase();
         accountMapper = InitMapper.getAccountMapper();
         accountTypeMapper = InitMapper.getAccountTypeMapper();
@@ -370,8 +378,7 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         statisticsMapper = InitMapper.getStatisticsMapper();
     }
 
-    private void insertOneRecord(long nextId, Long accountId, Long expenditureTypeId, long incomeTypeId, double account, String remark, String time) {
-
+    private void insertOneRecord(long nextId, Long accountId, Long expenditureTypeId, Long incomeTypeId, double account, String remark, String time) {
         Record record1 = new Record();
         record1.setId(nextId);
         record1.setAccountId(accountId);
@@ -403,76 +410,76 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.imageView2:
-                expendituretypeid= 0L;
                 pictureSelect="餐饮支出";
                 initImageView();
                 ivZDining.setAlpha((float)0.3);
+                expendituretypeid= 0L;
                 break;
             case R.id.imageView:
-                expendituretypeid= 1L;
                 pictureSelect="服饰支出";
                 initImageView();
                 ivZClothing.setAlpha((float)0.3);
+                expendituretypeid= 1L;
                 break;
             case R.id.imageView3:
-                expendituretypeid= 2L;
                 pictureSelect="日用支出";
                 initImageView();
                 ivZDailyuse.setAlpha((float)0.3);
+                expendituretypeid= 2L;
                 break;
             case R.id.imageView4:
-                expendituretypeid= 3L;
                 pictureSelect="蔬菜支出";
                 initImageView();
                 ivZVegetables.setAlpha((float)0.3);
+                expendituretypeid= 3L;
                 break;
             case R.id.imageView6:
-                expendituretypeid= 4L;
                 pictureSelect="出行支出";
                 initImageView();
                 ivZTravel.setAlpha((float)0.3);
+                expendituretypeid= 4L;
                 break;
             case R.id.imageView7:
-                expendituretypeid= 5L;
                 pictureSelect="娱乐支出";
                 initImageView();
                 ivZEntertainment.setAlpha((float)0.3);
+                expendituretypeid= 5L;
                 break;
             case R.id.imageView8:
-                expendituretypeid= 6L;
                 pictureSelect="数码支出";
                 initImageView();
                 ivZDigital.setAlpha((float)0.3);
+                expendituretypeid= 6L;
                 break;
             case R.id.imageView9:
-                expendituretypeid= 7L;
                 pictureSelect="其他支出";
                 initImageView();
                 ivZOther.setAlpha((float)0.3);
+                expendituretypeid= 7L;
                 break;
             case R.id.imageView10:
-                incometypeid = 0L;
                 pictureSelect="工资收入";
                 initImageView();
                 ivSSalary.setAlpha((float)0.3);
+                incometypeid = 0L;
                 break;
             case R.id.imageView11:
-                incometypeid = 1L;
                 pictureSelect="兼职收入";
                 initImageView();
                 ivSParttime.setAlpha((float)0.3);
+                incometypeid = 1L;
                 break;
             case R.id.imageView5:
-                incometypeid = 2L;
                 pictureSelect="理财收入";
                 initImageView();
                 ivSFinancial.setAlpha((float)0.3);
+                incometypeid = 2L;
                 break;
             case R.id.imageView12:
-                incometypeid = 3L;
                 pictureSelect="其他收入";
                 initImageView();
                 ivSOther.setAlpha((float)0.3);
+                incometypeid = 3L;
                 break;
         }
     }
