@@ -8,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,12 +25,15 @@ import com.example.account.mapper.RecordMapper;
 import com.example.account.mapper.StatisticsMapper;
 import com.example.account.mapper.UserMapper;
 import com.example.account.pojo.dto.AccountDTO;
+import com.example.account.pojo.dto.StatisticsDTO;
 import com.example.account.pojo.entity.Account;
 import com.example.account.pojo.entity.Record;
 import com.example.account.util.DataBaseUtil;
 import com.example.account.util.SnowFlakeUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -39,6 +43,7 @@ import java.util.Locale;
  */
 public class AddNewEntryActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "AddActivity";
     int Year;
     int Month;
     int Day;
@@ -131,12 +136,31 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                     int hour  =cal.get(Calendar.HOUR_OF_DAY);  //小时
                     int minute=cal.get(Calendar.MINUTE);   //分
                     int second=cal.get(Calendar.SECOND);  //秒
+                    String minuteStr,secondStr;
+                    if(minute<10){
+                        minuteStr = "0"+minute;
+                    }else{
+                        minuteStr = minute+"";
+                    }
+                    if(second<10){
+                        secondStr = "0"+second;
+                    }else{
+                        secondStr = second+"";
+                    }
+                    String monthStr;
+                    if(Month<10){
+                        monthStr="0"+Month;
+                    }else{
+                        monthStr = Month+"";
+                    }
+                    SimpleDateFormat df = new SimpleDateFormat(" HH:mm:ss");//设置日期格式
+                    String hour_minute_second = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
                     insertOneRecord(SnowFlakeUtil.getInstance().nextId(),accountId,expendituretypeid,incometypeid,
-                            account,null,Year+"-"+Month+"-"+Day+" "+hour+":"+minute+":"+second);
+                            account,null,Year+"-"+monthStr+"-"+Day+" "+"00:00:01");
 
 
                     Toast.makeText(AddNewEntryActivity.this,pictureSelect+selectaccount+
-                            ",金额:"+account+"日期："+Year+Month+Day+"",Toast.LENGTH_SHORT).show();
+                            ",金额:"+account+"日期："+Year+Month+Day+""+hour_minute_second,Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -158,7 +182,9 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                         selectaccount=items[which];
                         //TODO which现在只能选默认账户
                         AccountDTO accountDTO = InitMapper.getAccountMapper().getAccountByUserId(userInfo.getUser().getId()).get(which);
-                        accountId = (long)accountDTO.getId();
+
+                        accountId = accountDTO.getId();
+                        Log.d(TAG,accountId+"!!!");
                         alertDialog.dismiss();
                         Toast.makeText(AddNewEntryActivity.this,accountId+"----"+which,Toast.LENGTH_SHORT).show();
                     }
@@ -379,7 +405,7 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         statisticsMapper = InitMapper.getStatisticsMapper();
     }
 
-    private void insertOneRecord(long nextId, Long accountId, Long expenditureTypeId, Long incomeTypeId, double account, String remark, String time) {
+    private void insertOneRecord(Long nextId, Long accountId, Long expenditureTypeId, Long incomeTypeId, double account, String remark, String time) {
         Record record1 = new Record();
         record1.setId(nextId);
         record1.setAccountId(accountId);
@@ -389,7 +415,9 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         record1.setRemark(remark);
         record1.setTime(time);
         recordMapper.insertRecord(record1);
-
+//        StatisticsMapper statisticsMapper = InitMapper.getStatisticsMapper();
+//        StatisticsDTO statisticsDTO = statisticsMapper.getWeeklyIncomeStatistics(userInfo.getUser().getId(),"2021","06","23");
+//        Log.d(TAG,statisticsDTO.getDetailAmount().toString());
     }
 
     private void initListener() {

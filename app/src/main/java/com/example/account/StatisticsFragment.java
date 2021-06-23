@@ -18,6 +18,7 @@ import com.example.account.mapper.InitMapper;
 import com.example.account.mapper.RecordMapper;
 import com.example.account.mapper.StatisticsMapper;
 import com.example.account.mapper.UserMapper;
+import com.example.account.pojo.dto.AccountDTO;
 import com.example.account.pojo.dto.StatisticsDTO;
 import com.example.account.pojo.dto.StatisticsDetailDTO;
 import com.example.account.pojo.entity.Account;
@@ -55,6 +56,8 @@ import lecho.lib.hellocharts.view.LineChartView;
  * @description 统计
  */
 public class StatisticsFragment extends Fragment implements View.OnClickListener {
+    private final String TAG="STATISTICS_FRAGMENT";
+
     LineChartView trendChart;
     PieChart proportionChart;
     UserInfo userInfo;
@@ -94,7 +97,9 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
      * 绘制
      */
     private void drawTrend(List<Double>data,int flag){
-
+        for(int i =0;i<data.size();i++){
+            Log.d(TAG,data.get(i)+" ");
+        }
         getAxisXLables();//获取x轴的标注
         getAxisPoints(data);//获取坐标点
         initLineChart(flag);//初始化
@@ -170,13 +175,28 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
     private void initData(int c){
         testUser = userInfo.getUser();
+        if(testUser==null){
+            Toast.makeText(getActivity().getApplicationContext(),"无数据",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH)+1; //第一个月从0开始，所以得到月份＋1
         int day = calendar.get(calendar.DAY_OF_MONTH);
-
-        Log.d("StatisticsFragment",""+year+month+day);
+        String monthStr,dayStr;
+        if(month<10){
+            monthStr = "0"+month;
+        }else{
+            monthStr = ""+month;
+        }
+        if(day<10){
+            dayStr = "0"+(day);
+        }else{
+            dayStr = (day)+"";
+        }
+        Log.d("StatisticsFragment",""+year+monthStr+dayStr);
         switch (c){
             case 0: // 周
 //                while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
@@ -191,15 +211,23 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                 for(int i =0;i<7;i++){
                    System.out.println( dates.toString());
                 }
+
                 StatisticsDTO statisticsDTO;
+
                 if (currState == 0) {
                     statisticsDTO =
-                            statisticsMapper.getWeeklyExpenditureStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month), Integer.toString(day));
+                            statisticsMapper.getWeeklyExpenditureStatistics(testUser.getId(), Integer.toString(year), monthStr,dayStr);
                 }else{
                     statisticsDTO =
-                            statisticsMapper.getWeeklyIncomeStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month),Integer.toString(day));
+                            statisticsMapper.getWeeklyIncomeStatistics(testUser.getId(), Integer.toString(year),monthStr,dayStr);
                 }
                 weeklyData = new ArrayList<>();
+                if(statisticsDTO == null){
+                    Log.d(TAG,"NULL！！");
+                }else{
+                    Log.d(TAG,""+statisticsDTO.toString());
+                }
+
                 weeklyData = statisticsDTO.getDetailAmount();
                 totalWeeklyData = statisticsDTO.getTotalAmount();
                 proportionData = statisticsDTO.getDisplayDetailDTOList();
@@ -209,9 +237,9 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                 getDayByMonth(2021,6);
                 StatisticsDTO statisticsDTO1;
                 if(currState == 0){
-                    statisticsDTO1 = statisticsMapper.getMonthlyExpenditureStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month));
+                    statisticsDTO1 = statisticsMapper.getMonthlyExpenditureStatistics(testUser.getId(), Integer.toString(year), monthStr);
                 }else{
-                    statisticsDTO1 = statisticsMapper.getMonthlyIncomeStatistics(testUser.getId(), Integer.toString(year), Integer.toString(month));
+                    statisticsDTO1 = statisticsMapper.getMonthlyIncomeStatistics(testUser.getId(), Integer.toString(year), monthStr);
                 }
                 monthlyData = new ArrayList<>();
                 monthlyData = statisticsDTO1.getDetailAmount();
@@ -306,16 +334,16 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
         for (int i = 1; i <= day; i++) {
             String aDate=null;
             if(month<10&&i<10){
-                aDate = "0"+month+"-0"+i;
+                aDate = "0"+monthParam+"-0"+i;
             }
             if(month<10&&i>=10){
-                aDate = "0"+month+"-"+i;
+                aDate = "0"+monthParam+"-"+i;
             }
             if(month>=10&&i<10){
-                aDate = ""+month+"-0"+i;
+                aDate = ""+monthParam+"-0"+i;
             }
             if(month>=10&&i>=10){
-                aDate = ""+month+"-"+i;
+                aDate = ""+monthParam+"-"+i;
             }
             dates.add(aDate);
         }
@@ -353,7 +381,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
         statisticsMapper = InitMapper.getStatisticsMapper();
         recordMapper = InitMapper.getRecordMapper();
         accountMapper = InitMapper.getAccountMapper();
-        // insertRecords();
+        //insertRecords();
 
     }
 
@@ -366,19 +394,19 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 //        userMapper.insertUser(testUser);
 
 
-        testUser = InitMapper.getUserMapper().checkPassword("15187091901","qwert");
-
-        Account accountTwo = new Account();
-        accountTwo.setId(SnowFlakeUtil.getInstance().nextId());
-        accountTwo.setUserId(testUser.getId());
-        accountTwo.setAccountTypeId(1L);
-        accountTwo.setName("我的支付宝");
-        accountTwo.setRemove(false);
-        accountMapper.insertAccount(accountTwo, 2.0);
+        testUser = userInfo.getUser();
+        AccountDTO accountDTO= InitMapper.getAccountMapper().getAccountByUserId(testUser.getId()).get(0);
+//        Account accountTwo = new Account();
+//        accountTwo.setId(SnowFlakeUtil.getInstance().nextId());
+//        accountTwo.setUserId(testUser.getId());
+//        accountTwo.setAccountTypeId(1L);
+//        accountTwo.setName("我的支付宝");
+//        accountTwo.setRemove(false);
+//        accountMapper.insertAccount(accountTwo, 2.0);
 
         Record record1 = new Record();
         record1.setId(SnowFlakeUtil.getInstance().nextId());
-        record1.setAccountId(accountTwo.getId());
+        record1.setAccountId(accountDTO.getId());
         record1.setExpenditureTypeId(null);
         record1.setIncomeTypeId(0L);
         record1.setAmount(52.5);
@@ -388,7 +416,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
         Record record2 = new Record();
         record2.setId(SnowFlakeUtil.getInstance().nextId());
-        record2.setAccountId(accountTwo.getId());
+        record2.setAccountId(accountDTO.getId());
         record2.setExpenditureTypeId(1L);
         record2.setIncomeTypeId(null);
         record2.setAmount(-20.0);
@@ -398,7 +426,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
         Record record3 = new Record();
         record3.setId(SnowFlakeUtil.getInstance().nextId());
-        record3.setAccountId(accountTwo.getId());
+        record3.setAccountId(accountDTO.getId());
         record3.setExpenditureTypeId(null);
         record3.setIncomeTypeId(2L);
         record3.setAmount(4.0);
@@ -409,7 +437,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
         Record record4 = new Record();
         record4.setId(SnowFlakeUtil.getInstance().nextId());
-        record4.setAccountId(accountTwo.getId());
+        record4.setAccountId(accountDTO.getId());
         record4.setExpenditureTypeId(0L);
         record4.setIncomeTypeId(null);
         record4.setAmount(-3.0);
@@ -420,7 +448,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
         Record record5 = new Record();
         record5.setId(SnowFlakeUtil.getInstance().nextId());
-        record5.setAccountId(accountTwo.getId());
+        record5.setAccountId(accountDTO.getId());
         record5.setExpenditureTypeId(2L);
         record5.setIncomeTypeId(null);
         record5.setAmount(-7.5);
@@ -431,7 +459,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
 
         Record record6 = new Record();
         record6.setId(SnowFlakeUtil.getInstance().nextId());
-        record6.setAccountId(accountTwo.getId());
+        record6.setAccountId(accountDTO.getId());
         record6.setExpenditureTypeId(2L);
         record6.setIncomeTypeId(null);
         record6.setAmount(-4.4);
@@ -519,7 +547,17 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if(!hidden){
-            userInfo =(UserInfo)getActivity().getApplication();
+//            Log.d(TAG,"OnDisplay");
+//            userInfo = (UserInfo)getActivity().getApplication();
+//            initDatabase();
+//            if(userInfo.getUser()!=null){
+//                Log.d(TAG,"Common");
+//                initData(0);
+//                initView();
+//                initListener();
+//            }else{
+//                Toast.makeText(getActivity().getApplicationContext(),"请先登录",Toast.LENGTH_LONG).show();
+//            }
         }
     }
 }
