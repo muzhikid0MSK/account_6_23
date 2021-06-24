@@ -52,7 +52,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 /**
  * @author 梅盛珂
- * @last_modified_time 2021年06月17日14:22:14
+ * @last_modified_time 2021年06月24日14:44:20
  * @description 统计
  */
 public class StatisticsFragment extends Fragment implements View.OnClickListener {
@@ -208,9 +208,9 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                     calendar.add(Calendar.DATE, -1);
                 }
                 Collections.reverse(dates);
-                for(int i =0;i<7;i++){
-                   System.out.println( dates.toString());
-                }
+//                for(int i =0;i<7;i++){
+//                   System.out.println( dates.toString());
+//                }
 
                 StatisticsDTO statisticsDTO;
 
@@ -234,7 +234,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                 break;
             case 1: //月
                 dates = new ArrayList<>();
-                getDayByMonth(2021,6);
+                getDayByMonth(year,month);
                 StatisticsDTO statisticsDTO1;
                 if(currState == 0){
                     statisticsDTO1 = statisticsMapper.getMonthlyExpenditureStatistics(testUser.getId(), Integer.toString(year), monthStr);
@@ -248,7 +248,7 @@ public class StatisticsFragment extends Fragment implements View.OnClickListener
                 break;
             case 2: //年
                 dates = new ArrayList<>();
-                genMonths(2021);
+                genMonths(year);
                 StatisticsDTO statisticsDTO2;
                 if(currState == 0){
                     statisticsDTO2 = statisticsMapper.getYearlyExpenditureStatistics(testUser.getId(), Integer.toString(year));

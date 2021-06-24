@@ -156,10 +156,11 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                     }
                     SimpleDateFormat df = new SimpleDateFormat(" HH:mm:ss");//设置日期格式
                     String hour_minute_second = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
-
-                    if (expendituretypeid==null){
+                    Log.d(TAG,expendituretypeid+" "+incometypeid+" ");
+                    if (expendituretypeid!=null){
                         account=0-account;
                     }
+                    Log.d(TAG,"amount"+account);
                     insertOneRecord(SnowFlakeUtil.getInstance().nextId(),accountId,expendituretypeid,incometypeid,
                             account,null,Year+"-"+monthStr+"-"+Day+" "+"00:00:01");
 
