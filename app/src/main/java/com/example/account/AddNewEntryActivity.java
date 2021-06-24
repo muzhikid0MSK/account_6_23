@@ -109,8 +109,8 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         initdata();
         initview();
         initListener();
-        DataBaseUtil.initDB("TestDataBase", 1);
-        InitMapper initMapper = new InitMapper(AddNewEntryActivity.this);
+//        DataBaseUtil.initDB("TestDataBase", 1);
+//        InitMapper initMapper = new InitMapper(AddNewEntryActivity.this);
 
 
         //完成按钮，Toast全部信息
@@ -148,11 +148,16 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                     }else{
                         secondStr = second+"";
                     }
-                    String monthStr;
+                    String monthStr,dayStr;
                     if(Month<10){
                         monthStr="0"+Month;
                     }else{
                         monthStr = Month+"";
+                    }
+                    if(Day<10){
+                        dayStr = "0"+Day;
+                    }else{
+                        dayStr = ""+Day;
                     }
                     SimpleDateFormat df = new SimpleDateFormat(" HH:mm:ss");//设置日期格式
                     String hour_minute_second = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
@@ -161,8 +166,9 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                         account=0-account;
                     }
                     Log.d(TAG,"amount"+account);
+
                     insertOneRecord(SnowFlakeUtil.getInstance().nextId(),accountId,expendituretypeid,incometypeid,
-                            account,null,Year+"-"+monthStr+"-"+Day+" "+"00:00:01");
+                            account,null,Year+"-"+monthStr+"-"+dayStr+" "+"00:00:01");
 
 
                     finish();
@@ -390,12 +396,18 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     private void initifuser() {
         userInfo = (UserInfo)getApplication();
-        if (userInfo.getUser()==null){
-            Toast.makeText(AddNewEntryActivity.this,"未登录！",Toast.LENGTH_SHORT).show();
-            finish();
-        }
+//        if (userInfo.getUser()==null){
+//            Log.d(TAG,"运行到这里了");
+//            Toast.makeText(AddNewEntryActivity.this,"未登录！",Toast.LENGTH_SHORT).show();
+//            onDestroy();
+//        }
     }
 
     private void initdata() {

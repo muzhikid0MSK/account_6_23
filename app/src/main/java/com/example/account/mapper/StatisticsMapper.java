@@ -28,18 +28,18 @@ public class StatisticsMapper {
         SimpleMonthlyStatisticsDTO simpleMonthlyStatisticsDTO = new SimpleMonthlyStatisticsDTO();
         Cursor incomeCursor = database.rawQuery(
                 "SELECT SUM(amount) " +
-                "FROM record, account " +
-                "WHERE STRFTIME('%Y',time) = ? AND STRFTIME('%m',time) = ? AND amount > 0 AND record.account_id = account.id AND account.user_id = ? " +
-                "GROUP BY STRFTIME('%Y',time), STRFTIME('%m',time) "
+                        "FROM record, account " +
+                        "WHERE STRFTIME('%Y',time) = ? AND STRFTIME('%m',time) = ? AND amount > 0 AND record.account_id = account.id AND account.user_id = ? " +
+                        "GROUP BY STRFTIME('%Y',time), STRFTIME('%m',time) "
                 , new String[]{year, month, String.valueOf(userId)}
-                );
+        );
         Cursor expenditureCursor = database.rawQuery(
                 "SELECT SUM(-amount) " +
                         "FROM record, account " +
                         "WHERE STRFTIME('%Y',time) = ? AND STRFTIME('%m',time) = ? AND amount < 0 AND record.account_id = account.id AND account.user_id = ? " +
                         "GROUP BY STRFTIME('%Y',time), STRFTIME('%m',time) "
                 , new String[]{year, month, String.valueOf(userId)}
-                );
+        );
 
         if (incomeCursor.getCount() == 0){
             simpleMonthlyStatisticsDTO.setIncomeAmount(0.0);
@@ -70,7 +70,7 @@ public class StatisticsMapper {
         StatisticsDTO statisticsDTO = new StatisticsDTO();
 
         long todayTimestamp = new Timestamp(Integer.parseInt(year) - 1900, Integer.parseInt(month) - 1, Integer.parseInt(day), 23, 59, 59, 999999999).getTime() / 1000;
-        long startTimeStamp = (todayTimestamp - 1000 * 60 * 60 * 24 * 7) / 1000;
+        long startTimeStamp = (todayTimestamp -  60 * 60 * 24 * 7) / 1000;
 
         // 按照种类分类
         Cursor typeCursor = database.rawQuery(
@@ -134,7 +134,7 @@ public class StatisticsMapper {
         StatisticsDTO statisticsDTO = new StatisticsDTO();
 
         long todayTimestamp = new Timestamp(Integer.parseInt(year) - 1900, Integer.parseInt(month) - 1, Integer.parseInt(day), 23, 59, 59, 999999999).getTime() / 1000;
-        long startTimeStamp = (todayTimestamp - 1000 * 60 * 60 * 24 * 7) / 1000;
+        long startTimeStamp = (todayTimestamp -  60 * 60 * 24 * 7) / 1000;
 
         // 按照种类分类
         Cursor typeCursor = database.rawQuery(

@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.account.mapper.AccountMapper;
 import com.example.account.mapper.AccountTypeMapper;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     private UserMapper userMapper;
     private StatisticsMapper statisticsMapper;
 
+    UserInfo userInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     private void initDataBase() {
         DataBaseUtil.initDB("TestDataBase", 1);
         InitMapper initMapper = new InitMapper(MainActivity.this);
-
+        userInfo = (UserInfo)getApplication();
         database = InitMapper.getDatabase();
         accountMapper = InitMapper.getAccountMapper();
         accountTypeMapper = InitMapper.getAccountTypeMapper();
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         statisticsMapper = InitMapper.getStatisticsMapper();
 
 
-        // test();
+        //test();
     }
 
     public void test(){
@@ -236,8 +238,13 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.fabtn_add_entry:
+                if(userInfo.getUser()==null){
+                    Toast.makeText(getApplicationContext(),"请先登录",Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 Intent intent = new Intent(getApplicationContext(),AddNewEntryActivity.class);
                 startActivity(intent);
+                break;
         }
     }
 

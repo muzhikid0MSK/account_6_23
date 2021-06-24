@@ -135,9 +135,15 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     Calendar calendar = Calendar.getInstance();
                     int year = calendar.get(Calendar.YEAR);
                     int month = calendar.get(Calendar.MONTH)+1; //第一个月从0开始，所以得到月份＋1
+                    String monthStr;
+                    if(month<10){
+                        monthStr = "0"+month;
+                    }else{
+                        monthStr = month+"";
+                    }
                     int day = calendar.get(calendar.DAY_OF_MONTH);
                     StatisticsDTO statisticsDTO =
-                            statisticsMapper.getMonthlyExpenditureStatistics(userInfo.getUser().getId(),Integer.toString(year),Integer.toString(month));
+                            statisticsMapper.getMonthlyExpenditureStatistics(userInfo.getUser().getId(),Integer.toString(year),monthStr);
                     double curCost = statisticsDTO.getTotalAmount();
                     if(curCost<=threshold){
                         tvAlertHint.setText("您当前消费尚在计划之内");
