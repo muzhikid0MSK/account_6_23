@@ -93,6 +93,7 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
     private UserMapper userMapper;
     private StatisticsMapper statisticsMapper;
     UserInfo userInfo;
+    AccountDTO accountDTO;
 
     Long accountId;
     Long incometypeid;
@@ -117,8 +118,8 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 account=Double.parseDouble(straccount);
-                if (account==(double)0||accountId==null){
-                    Toast.makeText(AddNewEntryActivity.this,"请输入金额或选择账户",Toast.LENGTH_SHORT).show();
+                if (account==(double)0){
+                    Toast.makeText(AddNewEntryActivity.this,"请输入金额",Toast.LENGTH_SHORT).show();
                 } else{
 //                    userInfo = (UserInfo)getApplication();
 //                    userInfo.getUser().getId();
@@ -155,12 +156,17 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
                     }
                     SimpleDateFormat df = new SimpleDateFormat(" HH:mm:ss");//设置日期格式
                     String hour_minute_second = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
+
+                    if (expendituretypeid==null){
+                        account=0-account;
+                    }
                     insertOneRecord(SnowFlakeUtil.getInstance().nextId(),accountId,expendituretypeid,incometypeid,
                             account,null,Year+"-"+monthStr+"-"+Day+" "+"00:00:01");
 
 
-                    Toast.makeText(AddNewEntryActivity.this,pictureSelect+selectaccount+
-                            ",金额:"+account+"日期："+Year+Month+Day+""+hour_minute_second,Toast.LENGTH_SHORT).show();
+                    finish();
+//                    Toast.makeText(AddNewEntryActivity.this,pictureSelect+selectaccount+
+//                            ",金额:"+account+"日期："+Year+Month+Day+""+hour_minute_second,Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -403,6 +409,8 @@ public class AddNewEntryActivity extends AppCompatActivity implements View.OnCli
         recordMapper = InitMapper.getRecordMapper();
         userMapper = InitMapper.getUserMapper();
         statisticsMapper = InitMapper.getStatisticsMapper();
+        accountDTO = InitMapper.getAccountMapper().getAccountByUserId(userInfo.getUser().getId()).get(0);
+        accountId = accountDTO.getId();
     }
 
     private void insertOneRecord(Long nextId, Long accountId, Long expenditureTypeId, Long incomeTypeId, double account, String remark, String time) {
